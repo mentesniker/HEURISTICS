@@ -22,7 +22,7 @@ class Graph():
     self.ColorActual = dict()
     
   def graficaAleatoria(self):
-    numNodos = 10 #np.random.randint(50) + 50
+    numNodos = 10#np.random.randint(50) + 50
     for i in range(0,numNodos):
       self.G.add_node(i)
     for i in range(0, numNodos):
@@ -34,39 +34,29 @@ class Graph():
         for j in aux:
           self.G.add_edge(i, j)
 
+  def BuiAntSystem(self,alfa,beta):
+  	k = len(self.ColorActual)
+  	mejorColoracion = self.ColorActual
+  	bestNumColors = k
+  	ColoresDisponibles = alfa * k
+  	randomColorClases = random.sample(self.ColorActual.values(),beta*k)
+  	#randomColorClases = map(lambda x : 
+
   def MXRLF(self):
-    colores2 = list()
-    for i in range(0,len(list(self.G.nodes))):
-      coloresDisponibles = set(self.colores.values())
-      for e in self.G.adj[i]:
-        coloresUsados = set()
-        if(e in self.ColorActual):
-          coloresUsados.add(self.ColorActual[e])
-      colores2.append(random.sample(list(coloresDisponibles.difference(coloresUsados)),1)[0])
-    return colores2
-
-
-  def ColourVertex(self,i,k,Ck,X,F):
-    auxi = set()
-    auxi.add(i)
-    X = X.difference(auxi)
-    Ck = Ck.union(auxi)
-    VecinosEnG = set(self.G.adj[i])
-    GammaF = F.intersection(VecinosEnG)
-    GammaF = GammaF.union(auxi)
-    F = F.difference(GammaF)
+    d = nx.coloring.greedy_color(self.G, strategy='largest_first')
+    colorOutPut =list()
+    for e in d.values():
+    	colorOutPut.append(self.colores[e])
+    return colorOutPut
       
   def toString(self,colores):
     pos = nx.spring_layout(self.G)
-    options = {"node_size": 500, "alpha": 0.8}
-    nx.draw_networkx_nodes(self.G, pos, nodelist=list(self.G.nodes), node_color=colores, **options,with_labels=True)
+    options = {"node_size": 500, "alpha": 1,"with_labels": True}
+    nx.draw_networkx_nodes(self.G, pos, nodelist=list(self.G.nodes), node_color=colores, **options)
     nx.draw_networkx_edges(self.G, pos, width=1.0, alpha=0.5)
     plt.draw()
     
 graficaPrueba = Graph()
 graficaPrueba.graficaAleatoria()
 graficaPrueba.toString(graficaPrueba.MXRLF())
-#PropuestaDeSolucion = graficaPrueba.algoritmo_no_determinista()
-#PropuestaDeSolucion.toString()
-#PropuestaDeSolucion.VerificaSolucion(5)
 plt.show()
